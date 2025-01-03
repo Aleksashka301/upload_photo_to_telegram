@@ -1,11 +1,6 @@
 from environs import Env
-import os
 import requests
-
-
-env = Env()
-env.read_env()
-api_key = env.str('NASA_API_KEY')
+import os
 
 
 def receiving_earth_images_nasa(api_key):
@@ -32,3 +27,11 @@ def receiving_earth_images_nasa(api_key):
 
         with open(image_path, 'wb') as file:
             file.write(response.content)
+
+
+if __name__ == '__main__':
+    env = Env()
+    env.read_env()
+    api_key = env.str('NASA_API_KEY')
+
+    receiving_earth_images_nasa(api_key)
