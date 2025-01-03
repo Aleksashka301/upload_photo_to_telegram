@@ -2,5 +2,6 @@
 venv
 photos from space
 
+.gitignore
 test.py
 .env
