@@ -3,5 +3,6 @@ venv
 photos from space
 
 .gitignore
+.gitattributes
 test.py
 .env
