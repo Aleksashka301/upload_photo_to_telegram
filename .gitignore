@@ -1,6 +1,7 @@
 .idea
 venv
 photos from space
+__pycache__
 
 .gitignore
 .gitattributes
