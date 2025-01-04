@@ -1,3 +1,4 @@
+from helper_functions import time_interval
 from environs import Env
 import argparse
 import telegram
@@ -6,7 +7,7 @@ import time
 import os
 
 
-def post_to_telegram_and_get_next(image=''):
+def post_to_telegram_and_get_next(chat_id, image=''):
     folders_pictures = list(os.walk('photos from space'))
     path_images = {}
 
@@ -18,9 +19,11 @@ def post_to_telegram_and_get_next(image=''):
             if image in values:
                 folder_images = key
                 break
-
-        path_image_post = f'{folder_images}/{image}'
-        bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
+        try:
+            path_image_post = f'{folder_images}/{image}'
+            bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
+        except UnboundLocalError:
+            print('Изображения с таким именем или форматом нет!')
     else:
         folder_images = random.choice(list(path_images.keys()))
         image_post = random.choice(path_images[folder_images])
@@ -28,11 +31,6 @@ def post_to_telegram_and_get_next(image=''):
         bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
 
     return path_images
-
-
-def time_interval(timing):
-    seconds_in_minute = timing * 60
-    return seconds_in_minute
 
 
 if __name__ == '__main__':
@@ -50,8 +48,7 @@ if __name__ == '__main__':
     start_interval = args.time
     name_image = args.image
 
-    path_images = post_to_telegram_and_get_next()
-    path_images(name_image)
+    path_images = post_to_telegram_and_get_next(chat_id, name_image)
 
     while True:
         if not start_interval:
@@ -64,9 +61,3 @@ if __name__ == '__main__':
         path_image_post = f'{folder_images}/{image_post}'
 
         bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
-
-
-
-
-
-
