@@ -1,4 +1,4 @@
-from helper_functions import time_interval
+from helper_functions import calculation_in_seconds, sending_post
 from environs import Env
 import argparse
 import telegram
@@ -7,7 +7,7 @@ import time
 import os
 
 
-def post_to_telegram_and_get_next(chat_id, image=''):
+def post_to_telegram_and_get_next(chat_id, bot, image=None):
     folders_pictures = list(os.walk('photos from space'))
     path_images = {}
 
@@ -20,15 +20,14 @@ def post_to_telegram_and_get_next(chat_id, image=''):
                 folder_images = key
                 break
         try:
-            path_image_post = f'{folder_images}/{image}'
-            bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
+            sending_post(folder_images, image, bot, chat_id)
         except UnboundLocalError:
             print('Изображения с таким именем или форматом нет!')
     else:
         folder_images = random.choice(list(path_images.keys()))
         image_post = random.choice(path_images[folder_images])
-        path_image_post = f'{folder_images}/{image_post}'
-        bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
+
+        sending_post(folder_images, image_post, bot, chat_id)
 
     return path_images
 
@@ -37,7 +36,7 @@ if __name__ == '__main__':
     env = Env()
     env.read_env()
     telegram_token = env.str('TELEGRAM_TOKEN')
-    chat_id = env.str('CHAT_ID')
+    channel_id = env.str('TG_CHANNEL_ID')
     trigger_interval = env.int('TRIGGER_INTERVAL')
     bot = telegram.Bot(token=telegram_token)
 
@@ -48,16 +47,15 @@ if __name__ == '__main__':
     start_interval = args.time
     name_image = args.image
 
-    path_images = post_to_telegram_and_get_next(chat_id, name_image)
+    path_images = post_to_telegram_and_get_next(channel_id, bot, name_image)
 
     while True:
         if not start_interval:
             time.sleep(trigger_interval)
         else:
-            time.sleep(time_interval(start_interval))
+            time.sleep(calculation_in_seconds(start_interval))
 
         folder_images = random.choice(list(path_images.keys()))
         image_post = random.choice(path_images[folder_images])
-        path_image_post = f'{folder_images}/{image_post}'
 
-        bot.send_document(chat_id=chat_id, document=open(path_image_post, 'rb'))
+        sending_post(folder_images, image_post, bot, channel_id)
