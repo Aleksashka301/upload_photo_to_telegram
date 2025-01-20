@@ -28,7 +28,7 @@ def get_nasa_images(api_key, quantity_images):
 
 
 def download_nasa_images(api_key, quantity_images):
-    folder = f'photos from space/nasa'
+    folder = os.path.join('photos from space', 'nasa')
     os.makedirs(folder, exist_ok=True)
     links_images = get_nasa_images(api_key, quantity_images)
 
