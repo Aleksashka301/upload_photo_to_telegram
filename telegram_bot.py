@@ -11,8 +11,10 @@ def post_to_telegram_and_get_next(chat_id, bot, image=None):
     folders_pictures = list(os.walk('photos from space'))
     path_images = {}
 
-    for path in folders_pictures[1:]:
-        path_images[path[0]] = path[2]
+    for folder, objects in enumerate(folders_pictures):
+        if folder == 0:
+            continue
+        path_images[objects[0]] = objects[2]
 
     if image:
         for key, values in path_images.items():
@@ -58,4 +60,8 @@ if __name__ == '__main__':
         folder_images = random.choice(list(path_images.keys()))
         image_post = random.choice(path_images[folder_images])
 
-        sending_post(folder_images, image_post, bot, channel_id)
+        try:
+            sending_post(folder_images, image_post, bot, channel_id)
+        except telegram.error.NetworkError:
+            print('Соединение с интернетом разорвано, повторная отправка...')
+            time.sleep(10)
