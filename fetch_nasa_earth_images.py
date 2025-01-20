@@ -6,7 +6,7 @@ import os
 
 
 def receiving_earth_images_nasa(api_key):
-    folder = f'photos from space/earth photos nasa'
+    folder = os.path.join('photos from space', 'earth photos nasa')
     os.makedirs(folder, exist_ok=True)
 
     url_metadata = f'https://api.nasa.gov/EPIC/api/natural/'
