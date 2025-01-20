@@ -1,29 +1,23 @@
-from helper_functions import saving_image
+from helper_functions import saving_image, get_launches_data
 import argparse
-import requests
 import os
 
 
-def get_spacex_images(images_id):
+def get_spacex_images(images_id=None):
     if images_id:
-        url = f'https://api.spacexdata.com/v5/launches/{images_id}'
-        response = requests.get(url)
-        response.raise_for_status()
-
-        return response.json()['links']['flickr']['original']
+        launch = get_launches_data(images_id)
+        return launch['links']['flickr']['original']
     else:
-        url = 'https://api.spacexdata.com/v5/launches'
-        response = requests.get(url)
-        response.raise_for_status()
-        launches = response.json()
+        images_id = ''
+        launches = get_launches_data(images_id)
 
-        for launche in reversed(launches):
-            if launche['links']['flickr']['original']:
-                return launche['links']['flickr']['original']
+        for launch in reversed(launches):
+            if launch['links']['flickr']['original']:
+                return launch['links']['flickr']['original']
 
 
 def creation_spacex_images(images):
-    folder = f'photos from space/spacex'
+    folder = os.path.join('photos from space', 'spacex')
     os.makedirs(folder, exist_ok=True)
 
     for image_number, url_image in enumerate(images):
