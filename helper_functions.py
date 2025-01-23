@@ -18,8 +18,8 @@ def calculation_in_seconds(timing):
 
 
 def sending_post(folder, image, bot, channel_id):
-    path_image_post = os.path.join(folder, image)
-    with open(path_image_post, 'rb') as picture_for_message:
+    image_path_post = os.path.join(folder, image)
+    with open(image_path_post, 'rb') as picture_for_message:
         bot.send_document(chat_id=channel_id, document=picture_for_message)
 
 
