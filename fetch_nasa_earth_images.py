@@ -9,26 +9,26 @@ def receiving_earth_images_nasa(api_key):
     folder = os.path.join('photos from space', 'earth photos nasa')
     os.makedirs(folder, exist_ok=True)
 
-    url_metadata = f'https://api.nasa.gov/EPIC/api/natural/'
+    metadata_url = f'https://api.nasa.gov/EPIC/api/natural/'
     params = {
         'api_key': api_key
     }
-    response = requests.get(url_metadata, params=params)
+    response = requests.get(metadata_url, params=params)
     response.raise_for_status()
 
-    name_images = list(name_image['image'] for name_image in response.json())
-    date_images = response.json()[0]['date']
-    date_images = datetime.strptime(date_images, "%Y-%m-%d %H:%M:%S")
-    date_images = date_images.strftime("%Y/%m/%d")
+    images_name = list(name_image['image'] for name_image in response.json())
+    images_date = response.json()[0]['date']
+    images_date = datetime.strptime(images_date, "%Y-%m-%d %H:%M:%S")
+    images_date = images_date.strftime("%Y/%m/%d")
 
-    for img in name_images:
+    for img in images_name:
         image = f'{img}.png'
-        url_image = f'https://api.nasa.gov/EPIC/archive/natural/{date_images}/png/{img}.png'
+        image_url = f'https://api.nasa.gov/EPIC/archive/natural/{images_date}/png/{img}.png'
 
         params = {
             'api_key': api_key
         }
-        saving_image(folder, image, url_image, params)
+        saving_image(folder, image, image_url, params)
 
 
 if __name__ == '__main__':
