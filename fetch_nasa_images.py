@@ -14,25 +14,25 @@ def get_nasa_images(api_key, quantity_images):
 
     response = requests.get(url, params=params)
     response.raise_for_status()
-    links_images = {}
+    images_links = {}
 
     for obj in response.json():
         try:
             title = obj['title'].replace(' ', '_').replace('\r', '').replace('\n', '').strip()
-            links_images[title] = obj['url']
+            images_links[title] = obj['url']
         except KeyError:
             print('Ссылка не найдена!')
             continue
 
-    return links_images
+    return images_links
 
 
 def download_nasa_images(api_key, quantity_images):
     folder = os.path.join('photos from space', 'nasa')
     os.makedirs(folder, exist_ok=True)
-    links_images = get_nasa_images(api_key, quantity_images)
+    images_links = get_nasa_images(api_key, quantity_images)
 
-    for key, values in links_images.items():
+    for key, values in images_links.items():
         for symbol in '\/:*?"<>|':
             key = key.replace(symbol, '')
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('count', nargs='?', default=30, type=int)
     args = parser.parse_args()
-    quantity_images = args.count
+    images_quantity = args.count
 
-    download_nasa_images(api_key, quantity_images)
+    download_nasa_images(api_key, images_quantity)
 
