@@ -27,8 +27,7 @@ def get_nasa_images(api_key, quantity_images):
     return images_links
 
 
-def download_nasa_images(api_key, quantity_images):
-    folder = os.path.join('photos from space', 'nasa')
+def download_nasa_images(api_key, quantity_images, folder):
     os.makedirs(folder, exist_ok=True)
     images_links = get_nasa_images(api_key, quantity_images)
 
@@ -51,10 +50,13 @@ if __name__ == '__main__':
     env.read_env()
     api_key = env.str('NASA_API_KEY')
 
+    folder = os.path.join('photos from space', 'nasa')
     parser = argparse.ArgumentParser()
     parser.add_argument('count', nargs='?', default=30, type=int)
+    parser.add_argument('directory', nargs='?', default=folder, type=str)
     args = parser.parse_args()
     images_quantity = args.count
+    directory = args.directory
 
-    download_nasa_images(api_key, images_quantity)
+    download_nasa_images(api_key, images_quantity, directory)
 
