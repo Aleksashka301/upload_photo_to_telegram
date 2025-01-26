@@ -58,5 +58,8 @@ if __name__ == '__main__':
     images_quantity = args.count
     directory = args.directory
 
-    download_nasa_images(api_key, images_quantity, directory)
+    try:
+        download_nasa_images(api_key, images_quantity, directory)
+    except NotADirectoryError:
+        print('В данной системе нельзя использовать слов "con" или символы "\/:*?"<>|" для создания папок или файлов!')
 
