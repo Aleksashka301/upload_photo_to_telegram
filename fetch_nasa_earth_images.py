@@ -42,4 +42,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     directory = args.directory
 
-    receiving_earth_images_nasa(api_key, directory)
+    try:
+        receiving_earth_images_nasa(api_key, directory)
+    except NotADirectoryError:
+        print('В данной системе нельзя использовать слов "con" или символы "\/:*?"<>|" для создания папок или файлов!')
