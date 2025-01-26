@@ -4,17 +4,17 @@ import argparse
 import telegram
 import random
 import time
+import sys
 import os
 
 
-def get_images_path():
-    folders_pictures = list(os.walk('photos from space'))
+def get_images_path(folder):
+    folders_pictures = list(os.walk(folder))
     images_path = {}
 
-    for folder, objects in enumerate(folders_pictures):
-        if folder == 0:
-            continue
-        images_path[objects[0]] = objects[2]
+    for _, objects in enumerate(folders_pictures, 1):
+        directory, __, images = objects
+        images_path[directory] = images
 
     return images_path
 
@@ -45,14 +45,20 @@ if __name__ == '__main__':
     bot = telegram.Bot(token=telegram_token)
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('directory', nargs='?', default='photos from space', type=str)
     parser.add_argument('time', nargs='?', type=int)
     parser.add_argument('image', nargs='?', type=str)
     args = parser.parse_args()
+    directory = args.directory
     start_interval = args.time
     image_name = args.image
 
-    images_path = get_images_path()
-    post_to_telegram(images_path, channel_id, bot, image_name)
+    try:
+        images_path = get_images_path(directory)
+        post_to_telegram(images_path, channel_id, bot, image_name)
+    except IndexError:
+        print('Выбранная директория не существует! Работа программы завершена!')
+        sys.exit(1)
 
     while True:
         if not start_interval:
