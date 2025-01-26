@@ -2,17 +2,17 @@ from helper_functions import saving_image
 from environs import Env
 from datetime import datetime
 import requests
+import argparse
 import os
 
 
-def receiving_earth_images_nasa(api_key):
-    folder = os.path.join('photos from space', 'earth photos nasa')
+def receiving_earth_images_nasa(api_key, folder):
     os.makedirs(folder, exist_ok=True)
-
     metadata_url = f'https://api.nasa.gov/EPIC/api/natural/'
     params = {
         'api_key': api_key
     }
+
     response = requests.get(metadata_url, params=params)
     response.raise_for_status()
 
@@ -36,4 +36,10 @@ if __name__ == '__main__':
     env.read_env()
     api_key = env.str('NASA_API_KEY')
 
-    receiving_earth_images_nasa(api_key)
+    folder = os.path.join('photos from space', 'earth photos nasa')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('directory', nargs='?', default=folder, type=str)
+    args = parser.parse_args()
+    directory = args.directory
+
+    receiving_earth_images_nasa(api_key, directory)
